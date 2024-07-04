@@ -18,16 +18,8 @@ class Users extends Connection
                 'user_fname' => $this->inputs['user_fname'],
                 'user_mname' => $this->inputs['user_mname'],
                 'user_lname' => $this->inputs['user_lname'],
-                'category' => $this->inputs['category'],
-                'date_added' => $this->getCurrentDate(),
                 'username' => $this->inputs['username'],
-                'status' => $this->inputs['status'],
                 'password' => md5($pass),
-                'plate_number'  => $this->inputs['plate_number'],
-                'model'  => $this->inputs['model'],
-                'manufacturer'  => $this->inputs['manufacturer'],
-                'year'  => $this->inputs['year'],
-                'color'  => $this->inputs['color'],
             );
             return $this->insert($this->table, $form);
         }
@@ -46,14 +38,7 @@ class Users extends Connection
                 'user_fname' => $this->inputs['user_fname'],
                 'user_mname' => $this->inputs['user_mname'],
                 'user_lname' => $this->inputs['user_lname'],
-                'category' => $this->inputs['category'],
-                'status' => $this->inputs['status'],
-                'username' => $username,
-                'plate_number'  => $this->inputs['plate_number'],
-                'model'  => $this->inputs['model'],
-                'manufacturer'  => $this->inputs['manufacturer'],
-                'year'  => $this->inputs['year'],
-                'color'  => $this->inputs['color'],
+                'username' => $this->inputs['username'],
             );
             return $this->update($this->table, $form, "$this->pk = '$primary_id'");
         }
@@ -80,12 +65,11 @@ class Users extends Connection
         $rows = array();
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
+        $count = 1;
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
-            $row['driver_id'] = $row['user_id'];
+            $row['count'] = $count++;
             $row['user_fullname'] = $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];
-            $row['category'] = $row['category'] == "A" ? '<span class="badge badge-pill badge-info">ADMIN</span>' : ($row['category'] == "U" ? '<span class="badge badge-pill badge-success">USER</span>' : '<span class="badge badge-pill badge-warning">DRIVER</span>');
-            $row['user_category'] = $row['category'];
             $rows[] = $row;
         }
         return $rows;
@@ -97,7 +81,6 @@ class Users extends Connection
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
         $row['user_fullname'] = $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];
-        $row['user_category'] = $row['category'];
         return $row;
     }
 

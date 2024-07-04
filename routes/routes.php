@@ -13,12 +13,20 @@ $routes = array(
         'class_name' => 'Users',
         'has_detail' => 0
     ),
+    "job-types" => array(
+        'class_name' => 'JobTypes',
+        'has_detail' => 0
+    ),
+    "job-posting" => array(
+        'class_name' => 'JobPosting',
+        'has_detail' => 0
+    ),
 );
 /** END SET ROUTES */
 
 
 $base_folder = "pages/";
-$page = str_replace("/pepool/", "", $request);
+$page = str_replace("/".APP_FOLDER."/", "", $request);
 
 // chec if has parameters
 if (substr_count($page, "?") > 0) {
@@ -38,7 +46,7 @@ if (array_key_exists($page, $routes)) {
     require_once $dir;
     $route_settings = json_encode($routes[$page]);
 } else {
-    // require_once 'error-404.html';
-    require_once 'index.php';
+    require_once "index.php";//'error-404.html';
     $route_settings = json_encode([]);
 }
+

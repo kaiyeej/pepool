@@ -5,7 +5,7 @@
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <h2 class="page-title">
-                        Users
+                        Job Types
                     </h2>
                 </div>
             </div>
@@ -20,7 +20,7 @@
                         <div class="card-header">
                             <div class="row g-2 align-items-center">
                                 <div class="col-6 col-sm-4 col-md-2 col-xl py-3">
-                                    <a href="#" onclick="addUser()" class="btn btn-primary w-100">
+                                    <a href="#" onclick="addModal()" class="btn btn-primary w-100">
                                         Add Entry
                                     </a>
                                 </div>
@@ -41,10 +41,9 @@
                                             </th>
                                             <th></th>
                                             <th>#</th>
-                                            <th>Full Name</th>
-                                            <th>Category</th>
-                                            <th>Username</th>
+                                            <th>Job Type</th>
                                             <th>Date Added</th>
+                                            <th>Date Modified</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -58,19 +57,9 @@
         </div>
     </div>
 </div>
-<?php require_once 'modal_users.php'; ?>
+<?php require_once 'modal_job_types.php'; ?>
 <script type="text/javascript">
-    function addUser() {
-        addModal();
-        $("#div_password").show();
-    }
-
-    function getUserDetails(id) {
-        $("#div_password").hide();
-        getEntryDetails(id);
-    }
-
-
+   
     function getEntries() {
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
@@ -81,28 +70,25 @@
             },
             "columns": [{
                     "mRender": function(data, type, row) {
-                        return "<input type='checkbox' value=" + row.user_id + " class='dt_id' style='position: initial; opacity:1;'>";
+                        return "<input type='checkbox' value=" + row.job_type_id + " class='dt_id' style='position: initial; opacity:1;'>";
                     }
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary' onclick='getUserDetails(" + row.user_id + ")'><span class='mdi mdi-grease-pencil'></span></button></center>";
+                        return "<center><button class='btn btn-primary' onclick='getEntryDetails(" + row.job_type_id + ")'><span class='mdi mdi-grease-pencil'></span></button></center>";
                      }
                 },
                 {
                     "data": "count"
                 },
                 {
-                    "data": "user_fullname"
-                },
-                {
-                    "data": "user_category"
-                },
-                {
-                    "data": "username"
+                    "data": "job_type"
                 },
                 {
                     "data": "date_added"
+                },
+                {
+                    "data": "date_modified"
                 }
             ]
         });

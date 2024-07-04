@@ -1,5 +1,5 @@
-<form action="" method='POST' id='frm_add'>
-  <div class="modal modal-blur fade" id="modal_entry" tabindex="-1" role="dialog" aria-hidden="true">
+<form action="" method='POST' id='frm_submit'>
+  <div class="modal modal-blur fade" id="modalEntry" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -9,35 +9,35 @@
         <div class="modal-body">
           <div class="row">
             <input type="hidden" class="form-control modal_type" name="type">
-            <input type="hidden" class="form-control" id="user_id" name="user_id">
+            <input type="hidden" class="form-control" id="hidden_id" name="input[user_id]">
             <div class="col-sm-4">
               <div class="mb-3">
                 <label class="form-label">First Name</label>
-                <input type="text" class="form-control" id="user_fname" name="user_fname" autocomplete="off" required>
+                <input type="text" class="form-control input-item" id="user_fname" name="input[user_fname]" autocomplete="off" required>
               </div>
             </div>
             <div class="col-sm-4">
               <div class="mb-3">
                 <label class="form-label">Middle Name</label>
-                <input type="text" class="form-control" id="user_mname" name="user_mname" autocomplete="off">
+                <input type="text" class="form-control input-item" id="user_mname" name="input[user_mname]" autocomplete="off">
               </div>
             </div>
             <div class="col-sm-4">
               <div class="mb-3">
                 <label class="form-label">Last Name <strong style="color:red;">*</strong></label>
-                <input type="text" class="form-control" id="user_lname" name="user_lname" autocomplete="off" required>
+                <input type="text" class="form-control input-item" id="user_lname" name="input[user_lname]" autocomplete="off" required>
               </div>
             </div>
             <div class="col-sm-6">
               <div class="mb-3">
                 <label class="form-label">Username <strong style="color:red;">*</strong></label>
-                <input type="text" class="form-control" id="username" name="username" autocomplete="off" required>
+                <input type="text" class="form-control input-item" id="username" name="input[username]" autocomplete="off" required>
               </div>
             </div>
             <div class="col-sm-6" id="div_password">
               <div class="mb-3">
                 <label class="form-label">Password <strong style="color:red;">*</strong></label>
-                <input type="password" class="form-control" id="password" name="password" autocomplete="off" required>
+                <input type="password" class="form-control input-item" id="password" name="input[password]" autocomplete="off" required>
               </div>
             </div>
           </div>

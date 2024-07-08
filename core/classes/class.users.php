@@ -13,12 +13,12 @@ class Users extends Connection
         if ($is_exist->num_rows > 0) {
             return 2;
         } else {
-            $pass = $this->inputs['password'];
+            $pass = clean($this->inputs['password']);
             $form = array(
-                'user_fname' => $this->inputs['user_fname'],
-                'user_mname' => $this->inputs['user_mname'],
-                'user_lname' => $this->inputs['user_lname'],
-                'username' => $this->inputs['username'],
+                'user_fname' => clean($this->inputs['user_fname']),
+                'user_mname' => clean($this->inputs['user_mname']),
+                'user_lname' => clean($this->inputs['user_lname']),
+                'username' => clean($this->inputs['username']),
                 'password' => md5($pass),
             );
             return $this->insert($this->table, $form);
@@ -126,5 +126,27 @@ class Users extends Connection
     {
         session_destroy();
         return 1;
+    }
+
+    public function register(){
+        $user_email = $this->clean($this->inputs['user_email']);
+        $is_exist = $this->select($this->table, $this->pk, "user_email = '$user_email'");
+        if ($is_exist->num_rows > 0) {
+            $user_row = $is_exist->fetch_array();
+            return $user_row[0];
+        } else {
+            //$pass = clean($this->inputs['password']);
+            $form = array(
+                'user_email' => $this->clean($this->inputs['user_email']),
+                'user_fname' => $this->clean($this->inputs['user_fname']),
+                //'user_mname' => clean($this->inputs['user_mname']),
+                'user_lname' => $this->clean($this->inputs['user_lname']),
+                'username' => $this->clean($this->inputs['username']),
+                'user_photo' => $this->clean($this->inputs['user_photo']),
+                'user_category' => 'U'
+                //'password' => md5($pass),
+            );
+            return $this->insert($this->table, $form, "Y");
+        }
     }
 }

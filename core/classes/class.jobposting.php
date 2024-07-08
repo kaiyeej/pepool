@@ -9,16 +9,22 @@ class JobPosting extends Connection
 
     public function add()
     {
-        $form = array(
-            $this->name             => $this->clean($this->inputs[$this->name]),
-            'user_id'               => $this->clean($this->inputs['user_id']),
-            'job_type_id'           => $this->clean($this->inputs['job_type_id']),
-            'job_desc'              => $this->clean($this->inputs['job_desc']),
-            'job_fee'               => $this->clean($this->inputs['job_fee']),
-            'job_post_coordinates'  => $this->clean($this->inputs['job_post_coordinates']),
-        );
+        if(isset($this->inputs['user_id'])){
+            $job_type_id = $this->clean($this->inputs['job_type_id']);
+            $user_id = $this->clean($this->inputs['user_id']);
+            $form = array(
+                $this->name             => $this->clean($this->inputs[$this->name]),
+                'user_id'               => $this->clean($this->inputs['user_id']),
+                'job_type_id'           => $this->clean($this->inputs['job_type_id']),
+                'job_desc'              => $this->clean($this->inputs['job_desc']),
+                'job_fee'               => $this->clean($this->inputs['job_fee']),
+                'job_post_coordinates'  => $this->clean($this->inputs['job_post_coordinates']),
+                'job_post_status'       => 'P',
+                'date_added'            => $this->getCurrentDate()
+            );
 
-        return $this->insert($this->table, $form);
+            return $this->insertIfNotExist($this->table, $form, "job_type_id='$job_type_id' AND job_post_status='P' AND user_id='$user_id'");
+        }
     }
 
     public function edit()

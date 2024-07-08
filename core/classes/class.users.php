@@ -15,11 +15,12 @@ class Users extends Connection
         } else {
             $pass = clean($this->inputs['password']);
             $form = array(
-                'user_fname' => clean($this->inputs['user_fname']),
-                'user_mname' => clean($this->inputs['user_mname']),
-                'user_lname' => clean($this->inputs['user_lname']),
-                'username' => clean($this->inputs['username']),
-                'password' => md5($pass),
+                'user_fname'    => clean($this->inputs['user_fname']),
+                'user_mname'    => clean($this->inputs['user_mname']),
+                'user_lname'    => clean($this->inputs['user_lname']),
+                'username'      => clean($this->inputs['username']),
+                'password'      => md5($pass),
+                'date_added'    => $this->getCurrentDate()
             );
             return $this->insert($this->table, $form);
         }

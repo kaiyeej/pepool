@@ -9,11 +9,14 @@ class JobTypes extends Connection
 
     public function add()
     {
-        $form = array(
-            $this->name     => $this->clean($this->inputs[$this->name]),
-        );
-
-        return $this->insertIfNotExist($this->table, $form, "$this->name = '".$this->inputs[$this->name]."'");
+        if(isset($this->inputs[$this->name])){
+            $form = array(
+                $this->name     => $this->clean($this->inputs[$this->name]),
+                'user_id'       => $this->clean($this->inputs['user_id'])
+            );
+    
+            return $this->insertIfNotExist($this->table, $form, "$this->name = '".$this->inputs[$this->name]."'", "Y");
+        }
     }
 
     public function edit()

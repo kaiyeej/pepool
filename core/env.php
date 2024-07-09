@@ -1,6 +1,6 @@
 <?php
-define('APP_FOLDER', 'pepool');
-define('BASE_URL', 'https://juancoder.com/'.APP_FOLDER.'/');
+define('APP_FOLDER', '');
+define('BASE_URL', 'https://pepool.juancoder.com/'.APP_FOLDER.'/');
 define("BASE_PATH", __DIR__ . "/../");
 
 // define("HOST", "localhost");

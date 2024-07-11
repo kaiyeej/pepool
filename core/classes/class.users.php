@@ -82,6 +82,7 @@ class Users extends Connection
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
         $row['user_fullname'] = $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];
+        $row['member_since'] = date("M d, Y", strtotime($row['date_added']));
         return $row;
     }
 

@@ -60,6 +60,36 @@ class JobPosting extends Connection
         return $rows;
     }
 
+    public function show_filtered()
+    { 
+        $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
+        $rows = array();
+        $count = 1;
+        $JobTypes = new JobTypes;
+        $Users = new Users;
+        $result = $this->select("$this->table h LEFT JOIN tbl_job_types jt ON h.job_type_id=jt.job_type_id LEFT JOIN tbl_users u ON h.user_id=u.user_id", 'h.*, jt.job_type, u.user_fname, u.user_mname, u.user_lname, u.user_email, u.user_photo', $param);
+        while ($row = $result->fetch_assoc()) {
+            $row['count'] = $count++;
+            //$row['job_type'] =  $JobTypes->name($row['job_type_id']);
+            //$row['user_fullname'] =  $Users->getUser($row['user_id']);
+            $row['job_fee'] =  number_format($row['job_fee'],2);
+            $row['transaction_date'] =  date('M d, Y H:i A', strtotime($row['date_added']));
+            if($row['job_post_status'] == "O"){
+                $row['status'] = "Ongoing";
+                $row['color_status'] = "warning";
+            }else if($row['job_post_status'] == "F"){
+                $row['status'] = "Finished";
+                $row['color_status'] = "primary";
+            }else{
+                $row['status'] = "Pending";
+                $row['color_status'] = "medium";
+            }
+
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
     public function view()
     {
         $primary_id = $this->inputs['id'];

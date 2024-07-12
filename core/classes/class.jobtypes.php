@@ -11,7 +11,7 @@ class JobTypes extends Connection
     {
         if(isset($this->inputs[$this->name])){
             $form = array(
-                $this->name     => $this->clean($this->inputs[$this->name]),
+                $this->name     => $this->clean(STRTOUPPER($this->inputs[$this->name])),
                 'user_id'       => $this->clean($this->inputs['user_id'])
             );
     

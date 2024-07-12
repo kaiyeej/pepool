@@ -71,7 +71,7 @@ class JobPosting extends Connection
         while ($row = $result->fetch_assoc()) {
             $row['count'] = $count++;
             //$row['job_type'] =  $JobTypes->name($row['job_type_id']);
-            //$row['user_fullname'] =  $Users->getUser($row['user_id']);
+            $row['employer_name'] =  $row['user_fname'] . " " . $row['user_lname'];
             $row['job_fee'] =  number_format($row['job_fee'],2);
             $row['transaction_date'] =  date('M d, Y H:i A', strtotime($row['date_added']));
             if($row['job_post_status'] == "O"){

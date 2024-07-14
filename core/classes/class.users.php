@@ -78,11 +78,16 @@ class Users extends Connection
 
     public function view()
     {
-        $primary_id = $this->inputs['id'];
+        $primary_id = $this->clean($this->inputs['id']);
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
+
+        $fetch_jobs_posted = $this->select("tbl_job_posting", "COUNT(job_post_id) as count", "$this->pk = '$primary_id'");
+        $job_posted_row = $fetch_jobs_posted->fetch_assoc();
+
         $row['user_fullname'] = $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];
         $row['member_since'] = date("M d, Y", strtotime($row['date_added']));
+        $row['jobs_posted'] = $job_posted_row['count'];
         return $row;
     }
 

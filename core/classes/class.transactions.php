@@ -4,7 +4,33 @@ class Transactions extends Connection
 {
     private $table = 'tbl_transactions';
     public $pk = 'transaction_id';
-    public $name = 'ref_number';
+    public $name = 'reference_number';
+
+    public function add()
+    {
+        if(isset($this->inputs['job_post_id'])){
+            $job_post_id  = $this->clean($this->inputs['job_post_id']);
+            $user_id      = $this->clean($this->inputs['user_id']);
+            $form = array(
+                $this->name            => $this->generate(),
+                'job_post_id'          => $job_post_id,
+                'bidding_amount'       => $this->clean($this->inputs['bidding_amount']),
+                'user_id'              => $user_id,
+                'status'               => 'P',
+                'transaction_rating'   => 0,
+                'date_added'           => $this->getCurrentDate()
+            );
+    
+            return $this->insertIfNotExist($this->table, $form, "job_post_id='$job_post_id' AND user_id='$user_id'");
+        }
+    }
+
+    public function generate(){
+        $date = $this->getCurrentDate();
+        $user_id = $this->inputs['user_id'];
+        $reference_number = date("mdyhis", strtotime($date)) . $user_id;
+        return $reference_number;
+    }
 
     public function edit()
     {

@@ -19,6 +19,9 @@ class JobPosting extends Connection
                 'job_desc'              => $this->clean($this->inputs['job_desc']),
                 'job_fee'               => $this->clean($this->inputs['job_fee']),
                 'job_post_coordinates'  => $this->clean($this->inputs['job_post_coordinates']),
+                'job_term'              => $this->clean($this->inputs['job_term']),
+                'start_date'            => $this->clean($this->inputs['start_date']),
+                'end_date'              => $this->clean($this->inputs['end_date']),
                 'job_post_status'       => 'P',
                 'date_added'            => $this->getCurrentDate()
             );
@@ -54,7 +57,6 @@ class JobPosting extends Connection
             $row['count'] = $count++;
             $row['job_type'] =  $JobTypes->name($row['job_type_id']);
             $row['user_fullname'] =  $Users->getUser($row['user_id']);
-            $row['job_fee'] =  number_format($row['job_fee'],2);
             $rows[] = $row;
         }
         return $rows;
@@ -72,7 +74,6 @@ class JobPosting extends Connection
             $row['count'] = $count++;
             //$row['job_type'] =  $JobTypes->name($row['job_type_id']);
             $row['employer_name'] =  $row['user_fname'] . " " . $row['user_lname'];
-            $row['job_fee'] =  number_format($row['job_fee'],2);
             $row['transaction_date'] =  date('M d, Y H:i A', strtotime($row['date_added']));
             if($row['job_post_status'] == "O"){
                 $row['status'] = "Ongoing";
@@ -95,10 +96,9 @@ class JobPosting extends Connection
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $count = 1;
-        $result = $this->select("$this->table h LEFT JOIN tbl_job_types jt ON h.job_type_id=jt.job_type_id LEFT JOIN tbl_users u ON h.user_id=u.user_id", 'h.*, jt.job_type, u.user_fname, u.user_mname, u.user_lname, u.user_email, u.user_photo', $param);
+        $result = $this->select("$this->table h LEFT JOIN tbl_job_types jt ON h.job_type_id=jt.job_type_id LEFT JOIN tbl_users u ON h.user_id=u.user_id LEFT JOIN tbl_transactions t ON t.job_post_id=h.job_post_id", 'h.*, jt.job_type, u.user_fname, u.user_mname, u.user_lname, u.user_email, u.user_photo, count(t.transaction_id) as number_of_applicants', $param);
         while ($row = $result->fetch_assoc()) {
             $row['count'] = $count++;
-            //$row['job_type'] =  $JobTypes->name($row['job_type_id']);
             $row['employer_name'] =  $row['user_fname'] . " " . $row['user_lname'];
             $row['job_fee'] =  number_format($row['job_fee'],2);
             $row['transaction_date'] =  date('M d, Y H:i A', strtotime($row['date_added']));

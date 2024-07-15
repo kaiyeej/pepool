@@ -5,7 +5,7 @@
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <h2 class="page-title">
-                        Search for Jobs
+                        Job Post
                     </h2>
                 </div>
             </div>
@@ -15,14 +15,14 @@
     <div class="page-body">
         <div class="container-xl">
             <div class="row g-4">
-                <div class="col-md-3">
+                <!-- <div class="col-md-3">
                     <div class="sticky-top" style="top: 150px;">
                         <div class="form-label">Job Types</div>
                         <div class="mb-4" id="canvas_job_types">
                         </div>
                     </div>
-                </div>
-                <div class="col-md-9">
+                </div> -->
+                <div class="col-md-12">
                     <div id="canvas_job_posting" class="job-listings" style="max-height: 600px; overflow-y: auto;">
 
                     </div>
@@ -33,36 +33,41 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-        getJobTypes();
+        // getJobTypes();
         getJobPosting();
     });
 
-    function getJobTypes() {
-        $.ajax({
-            url: "controllers/sql.php?c=JobTypes&q=show",
-            dataType: "json",
-            success: function(response) {
+    // function getJobTypes() {
+    //     $.ajax({
+    //         url: "controllers/sql.php?c=JobTypes&q=show",
+    //         dataType: "json",
+    //         success: function(response) {
 
-                if (response.data && response.data.length > 0) {
-                    $("#canvas_job_types").empty();
-                    response.data.forEach(function(row) {
-                        var checkbox = $('<label class="form-check">').html(
-                            '<input type="checkbox" class="form-check-input" name="form-type[]" value="' + row.job_type_id + '" checked>' +
-                            '<span class="form-check-label">' + row.job_type + '</span>'
-                        );
-                        $("#canvas_job_types").append(checkbox);
-                    });
-                } else {
-                    console.log("No job types found.");
-                }
-            }
-        });
-    }
+    //             if (response.data && response.data.length > 0) {
+    //                 $("#canvas_job_types").empty();
+    //                 response.data.forEach(function(row) {
+    //                     var checkbox = $('<label class="form-check">').html(
+    //                         '<input type="checkbox" onclick="getJobPosting(' + row.job_type_id + ')" class="form-check-input" name="form-type[]" value="' + row.job_type_id + '" checked>' +
+    //                         '<span class="form-check-label">' + row.job_type + '</span>'
+    //                     );
+    //                     $("#canvas_job_types").append(checkbox);
+    //                 });
+    //             } else {
+    //                 console.log("No job types found.");
+    //             }
+    //         }
+    //     });
+    // }
 
     function getJobPosting() {
+        // var param = job_type_id == -1 ? "" : "job_type_id="+job_type_id;
         $.ajax({
             url: "controllers/sql.php?c=" + route_settings.class_name + "&q=show",
             dataType: "json",
+            // type: "POST",
+            // data: {
+            //     param:param
+            // },
             success: function(response) {
                 console.log(response);
 

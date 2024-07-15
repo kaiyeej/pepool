@@ -2,44 +2,32 @@
 
 class Homepage extends Connection
 {
-    public function unit_graph()
+    public function total_user()
     {
-        $rows = array();
-        $result = $this->select('tbl_units','count(unit_id) as total, unit_status', "unit_status!='' GROUP BY unit_status");
-        $count = 0;
-        while($row = $result->fetch_assoc()){
-            if($row['unit_status'] == "G"){
-                $list['label'] = "Good Condition";
-            }else if($row['unit_status'] == "R"){
-                $list['label'] = "For Repair";
-            }else{
-                $list['label'] = "Damaged";
-            }
-            $list['total'] =  $row['total']*1;
-            $rows[] = $list;
-        }
-
-        return $rows;
-    }
-
-
-    public function total_user(){
-        $result = $this->select("tbl_users", "count(user_id)", "category='U'");
+        $result = $this->select("tbl_users", "count(user_id)");
         $row = $result->fetch_array();
         return $row[0];
     }
 
-    public function total_driver(){
-        $result = $this->select("tbl_users", "count(user_id)", "category='D'");
+    public function total_transaction()
+    {
+        $result = $this->select("tbl_transactions", "count(transaction_id)", "status = 'F'");
         $row = $result->fetch_array();
         return $row[0];
     }
 
-    public function total_transaction(){
-        $result = $this->select("tbl_transactions", "sum(amount)","status = 'F'");
+    
+    public function total_job_types()
+    {
+        $result = $this->select("tbl_job_types", "count(job_type_id)");
         $row = $result->fetch_array();
-        return number_format($row[0],2);
+        return $row[0];
+    }
+
+    public function total_post()
+    {
+        $result = $this->select("tbl_job_posting", "count(job_post_id)");
+        $row = $result->fetch_array();
+        return $row[0];
     }
 }
-
-?>

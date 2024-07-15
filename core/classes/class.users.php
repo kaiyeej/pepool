@@ -36,10 +36,12 @@ class Users extends Connection
             return 2;
         } else {
             $form = array(
-                'user_fname' => $this->inputs['user_fname'],
-                'user_mname' => $this->inputs['user_mname'],
-                'user_lname' => $this->inputs['user_lname'],
-                'username' => $this->inputs['username'],
+                'user_fname'    => $this->inputs['user_fname'],
+                'user_mname'    => $this->inputs['user_mname'],
+                'user_lname'    => $this->inputs['user_lname'],
+                'username'      => $this->inputs['username'],
+                'user_email'    => $this->inputs['user_email'],
+                
             );
             return $this->update($this->table, $form, "$this->pk = '$primary_id'");
         }
@@ -61,6 +63,22 @@ class Users extends Connection
         return $this->delete($this->table, "$this->pk IN($ids)");
     }
 
+    public function update_password()
+    {
+        $primary_id = $this->inputs[$this->pk];
+        $old_password = $this->inputs['old_password'];
+        $is_exist = $this->select($this->table, $this->pk, "password = md5('$old_password') AND $this->pk = '$primary_id'");
+        if ($is_exist->num_rows <= 0) {
+            return 2;
+        } else {
+            $pass = $this->clean($this->inputs['new_password']);
+            $form = array(
+                'password' => md5($pass)
+            );
+            return $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        }
+    }
+    
     public function show()
     {
         $rows = array();
@@ -97,6 +115,15 @@ class Users extends Connection
         $result = $self->select($self->table, $self->name, "$self->pk  = '$primary_id'");
         $row = $result->fetch_assoc();
         return $row[$self->name];
+    }
+
+    
+    public static function rows($primary_id)
+    {
+        $self = new self;
+        $result = $self->select($self->table, "*", "$self->pk  = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row;
     }
 
     public static function getUser($primary_id)

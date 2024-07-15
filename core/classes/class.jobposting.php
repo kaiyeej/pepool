@@ -74,6 +74,7 @@ class JobPosting extends Connection
             $row['count'] = $count++;
             //$row['job_type'] =  $JobTypes->name($row['job_type_id']);
             $row['employer_name'] =  $row['user_fname'] . " " . $row['user_lname'];
+            $row['term_range'] =  date("M d, Y", strtotime($row['start_date'])) . " to " . date("M d, Y", strtotime($row['end_date']));
             $row['transaction_date'] =  date('M d, Y H:i A', strtotime($row['date_added']));
             if($row['job_post_status'] == "O"){
                 $row['status'] = "Ongoing";

@@ -21,6 +21,10 @@ $routes = array(
         'class_name' => 'JobPosting',
         'has_detail' => 0
     ),
+    "profile" => array(
+        'class_name' => 'Users',
+        'has_detail' => 0
+    ),
 );
 /** END SET ROUTES */
 

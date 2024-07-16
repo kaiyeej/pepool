@@ -4,6 +4,8 @@ include 'core/config.php';
 if (!isset($_SESSION["pepool_user_id"])) {
   header("location:./login.php");
 }
+
+$Users = new Users;
 ?>
 <!doctype html>
 <html lang="en">
@@ -86,12 +88,12 @@ if (!isset($_SESSION["pepool_user_id"])) {
                     <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
                   </svg></span>
                 <div class="d-none d-xl-block ps-2">
-                  <div>Fullname here</div>
-                  <div class="mt-1 small text-muted">Category</div>
+                  <div><?= $Users->getUser($_SESSION["pepool_user_id"]) ?></div>
+                  <div class="mt-1 small text-muted">Admin</div>
                 </div>
               </a>
               <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <a href="index.php?page=profile" class="dropdown-item">Profile</a>
+                <a href="./profile" class="dropdown-item">Profile</a>
                 <!-- <a href="#" class="dropdown-item">Feedback</a>
                 <div class="dropdown-divider"></div>
                 <a href="./settings.html" class="dropdown-item">Settings</a> -->

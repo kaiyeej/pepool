@@ -47,6 +47,30 @@ class Users extends Connection
         }
     }
 
+    public function save_signature(){
+        if(isset($this->inputs['user_id'])){
+            $data = $this->clean($this->inputs['image_data']);
+            $user_id = $this->clean($this->inputs['user_id']);
+            $row = $this->rows($user_id);
+            $e_sign = $row['e_signature'];
+
+            $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $data));
+            $file_name = $user_id . '-' . date('mdyhis', strtotime($this->getCurrentDate())) . ".png";
+            $file = file_put_contents('../assets/' . $file_name, $data);
+            if($file){
+                $result = $this->update($this->table, ['e_signature' => $file_name], "user_id='$user_id'");
+                if($result){
+                    if($e_sign !== ""){
+                        unlink("../assets/" . $e_sign);
+                    }
+                    return $file_name;
+                }else{
+                    return -1;
+                }
+            }
+        }
+    }
+
     public function block()
     {
         $ids = implode(",", $this->inputs['ids']);

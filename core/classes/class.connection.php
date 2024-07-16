@@ -105,11 +105,12 @@ class Connection
 
     public function clean($slug)
     {
-        if (is_string($slug)) {
-            return filter_var($slug, FILTER_SANITIZE_STRING);
-        } else {
-            return $slug;
-        }
+        return $this->mysqli->real_escape_string($slug);
+        // if (is_string($slug)) {
+        //     return filter_var($slug, FILTER_SANITIZE_STRING);
+        // } else {
+        //     return $slug;
+        // }
     }
 
     public function getCurrentDate()

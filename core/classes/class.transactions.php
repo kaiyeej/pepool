@@ -25,11 +25,40 @@ class Transactions extends Connection
         }
     }
 
+    public function show_applicants(){
+        if(isset($this->inputs['job_post_id'])){
+            $job_post_id = $this->clean($this->inputs['job_post_id']);
+            $rows = array();
+            $result = $this->select("$this->table t LEFT JOIN tbl_users u ON t.user_id=u.user_id", "*", "job_post_id='$job_post_id'");
+            while ($row = $result->fetch_assoc()) {
+                $row['user_fullname'] = $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];
+                $rows[] = $row;
+            }
+
+            return $rows;
+        }
+    }
+
     public function generate(){
         $date = $this->getCurrentDate();
         $user_id = $this->inputs['user_id'];
         $reference_number = date("mdyhis", strtotime($date)) . $user_id;
         return $reference_number;
+    }
+
+    public function accept(){
+        $id = $this->clean($this->inputs['id']);
+        $row = $this->rows($id);
+        $form = array(
+            'status' => 'O'
+        );
+        $result = $this->update($this->table, $form, "$this->pk='$id'");
+        if($result){
+            $form = array(
+                'job_post_status' => 'O'
+            );
+            return $this->update("tbl_job_posting", $form, "job_post_id='$row[job_post_id]'");
+        }
     }
 
     public function edit()
@@ -137,6 +166,12 @@ class Transactions extends Connection
     public function view()
     {
         $primary_id = $this->inputs['id'];
+        $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
+        return $result->fetch_assoc();
+    }
+
+    public function rows($primary_id)
+    {
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         return $result->fetch_assoc();
     }

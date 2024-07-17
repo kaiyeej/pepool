@@ -185,6 +185,25 @@ class Users extends Connection
 
         return $res;
     }
+
+    public function login_mobile()
+    {
+
+        $username = $this->inputs['username'];
+        $password = $this->inputs['password'];
+
+        $result = $this->select($this->table, "*", "username = '$username' AND password = md5('$password') AND user_category='U'");
+        $row = $result->fetch_assoc();
+
+        if ($result->num_rows > 0) {
+            $res = $row;
+        } else {
+            $res = 0;
+        }
+
+        return $res;
+    }
+
     public function logout()
     {
         session_destroy();
@@ -202,10 +221,34 @@ class Users extends Connection
             $form = array(
                 'user_email' => $this->clean($this->inputs['user_email']),
                 'user_fname' => $this->clean($this->inputs['user_fname']),
-                //'user_mname' => clean($this->inputs['user_mname']),
+                //'user_mname' => $this->clean($this->inputs['user_mname']),
                 'user_lname' => $this->clean($this->inputs['user_lname']),
                 'username' => $this->clean($this->inputs['username']),
                 'user_photo' => $this->clean($this->inputs['user_photo']),
+                'user_category' => 'U'
+                //'password' => md5($pass),
+            );
+            return $this->insert($this->table, $form, "Y");
+        }
+    }
+
+    public function register_manual(){
+        $user_email = $this->clean($this->inputs['user_email']);
+        $is_exist = $this->select($this->table, $this->pk, "user_email = '$user_email'");
+        if ($is_exist->num_rows > 0) {
+            return -2;
+        } else {
+            //$pass = clean($this->inputs['password']);
+            $form = array(
+                'user_email' => $this->clean($this->inputs['user_email']),
+                'user_fname' => $this->clean($this->inputs['user_fname']),
+                'user_mname' => $this->clean($this->inputs['user_mname']),
+                'user_lname' => $this->clean($this->inputs['user_lname']),
+                'username' => $this->clean($this->inputs['user_email']),
+                'user_address' => $this->clean($this->inputs['user_address']),
+                'user_contact_number' => $this->clean($this->inputs['user_contact_number']),
+                'password' => $this->clean(md5($this->inputs['password'])),
+                'user_photo' => '',
                 'user_category' => 'U'
                 //'password' => md5($pass),
             );

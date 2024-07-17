@@ -25,6 +25,29 @@ class Transactions extends Connection
         }
     }
 
+    public function show_filtered(){
+        $user_id = $this->clean($this->inputs['user_id']);
+        $rows = array();
+        $result = $this->select("tbl_transactions t LEFT JOIN tbl_job_posting jp ON t.job_post_id=jp.job_post_id LEFT JOIN tbl_job_types jt ON jt.job_type_id=jp.job_type_id LEFT JOIN tbl_users u ON u.user_id=jp.user_id", "*, t.date_added as transaction_date","t.user_id='$user_id'");
+        while ($row = $result->fetch_assoc()) {
+            $row['transaction_date'] = date("M d, Y h:i A", strtotime($row['transaction_date']));
+            $row['employer_name'] = $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];
+            if($row['status'] == "O"){
+                $row['status'] = "Ongoing";
+                $row['color_status'] = "warning";
+            }else if($row['status'] == "F"){
+                $row['status'] = "Finished";
+                $row['color_status'] = "primary";
+            }else{
+                $row['status'] = "Pending";
+                $row['color_status'] = "medium";
+            }
+            $rows[] = $row;
+        }
+
+        return $rows;
+    }
+
     public function show_applicants(){
         if(isset($this->inputs['job_post_id'])){
             $job_post_id = $this->clean($this->inputs['job_post_id']);

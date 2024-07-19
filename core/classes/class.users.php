@@ -194,7 +194,7 @@ class Users extends Connection
         $token = $this->clean($this->inputs['token']);
 
         $form = array(
-            'tokpush_notification_token' => $token
+            'push_notification_token' => $token
         );
 
         return $this->update($this->table, $form, "user_id='$primary_id'");

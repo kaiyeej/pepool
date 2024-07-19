@@ -77,6 +77,10 @@ class Transactions extends Connection
         );
         $result = $this->update($this->table, $form, "$this->pk='$id'");
         if($result){
+
+            // insert contract
+            
+
             $form = array(
                 'job_post_status' => 'O'
             );
@@ -86,14 +90,15 @@ class Transactions extends Connection
 
     public function show_similar_transactions(){
         $id = $this->clean($this->inputs['id']);
+        $user_id = $this->clean($this->inputs['user_id']);
         
         // set headers
         $header_arr = array();
         $list_of_worker_ids = array();
         array_push($header_arr, 'list_of_workers');
-        $fetch_workers = $this->select("tbl_preferred_jobs p LEFT JOIN tbl_users u ON p.user_id=u.user_id", "p.user_id, u.user_email", "job_type_id='$id' GROUP BY p.user_id ORDER BY p.user_id ASC");
+        $fetch_workers = $this->select("tbl_preferred_jobs", "user_id", "job_type_id='$id' GROUP BY user_id ORDER BY user_id ASC");
         while($worker_row = $fetch_workers->fetch_assoc()){
-            array_push($header_arr, $worker_row['user_email']);
+            array_push($header_arr, $worker_row['user_id']);
             array_push($list_of_worker_ids, $worker_row['user_id']);
         }
 
@@ -105,11 +110,11 @@ class Transactions extends Connection
 
             $arr = array();
 
-            $fetch = $this->select("$this->table t LEFT JOIN tbl_job_posting p ON t.job_post_id=p.job_post_id LEFT JOIN tbl_users u ON u.user_id=p.user_id", "t.user_id as worker_id, p.user_id as client_id, AVG(t.transaction_rating) as transaction_rating, u.user_email", "p.job_type_id='$id' AND t.user_id IN ($ids) GROUP BY p.user_id");
+            $fetch = $this->select("$this->table t LEFT JOIN tbl_job_posting p ON t.job_post_id=p.job_post_id", "t.user_id as worker_id, p.user_id as client_id, AVG(t.transaction_rating) as transaction_rating", "p.job_type_id='$id' AND t.status='F' AND t.user_id IN ($ids) GROUP BY p.user_id");
             while($row = $fetch->fetch_assoc()){
                 $ratings_for_workers = array();
                 $ratings_for_workers = array_fill(0, sizeof($list_of_worker_ids) + 1, 0);
-                $arr_index = array_search($row['user_email'], $header_arr);
+                $arr_index = array_search($row['worker_id'], $header_arr);
                 $ratings_for_workers[0] = $row['client_id'];
                 $ratings_for_workers[$arr_index] = $row['transaction_rating'] > 3 ? 1 : 0;
                 // if($row['transaction_rating'] >= 4){

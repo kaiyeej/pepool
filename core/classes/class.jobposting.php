@@ -12,13 +12,27 @@ class JobPosting extends Connection
         if(isset($this->inputs['user_id'])){
             $job_type_id = $this->clean($this->inputs['job_type_id']);
             $user_id = $this->clean($this->inputs['user_id']);
+            $user_address_id = $this->clean($this->inputs['user_address_id']);
+            $current_coordinates = $this->clean($this->inputs['job_post_coordinates']);
+            
+            if($user_address_id == 0){
+                $job_coordinates = $current_coordinates;
+            }else{
+                $UserAddress = new UserAddress;
+                $user_address_row = $UserAddress->rows($user_address_id);
+                $job_coordinates = $user_address_row['coordinates'];
+            }
+            
+
+            
+            
             $form = array(
                 $this->name             => $this->clean($this->inputs[$this->name]),
                 'user_id'               => $this->clean($this->inputs['user_id']),
                 'job_type_id'           => $this->clean($this->inputs['job_type_id']),
                 'job_desc'              => $this->clean($this->inputs['job_desc']),
                 'job_fee'               => $this->clean($this->inputs['job_fee']),
-                'job_post_coordinates'  => $this->clean($this->inputs['job_post_coordinates']),
+                'job_post_coordinates'  => $job_coordinates,
                 'job_term'              => $this->clean($this->inputs['job_term']),
                 'start_date'            => $this->clean($this->inputs['start_date']),
                 'end_date'              => $this->clean($this->inputs['end_date']),

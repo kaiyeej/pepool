@@ -8,5 +8,6 @@ $classes = array(
     'Transactions'      => $pre_class . 'transactions.php',
     'JobTypes'          => $pre_class . 'jobtypes.php',
     'JobPosting'        => $pre_class . 'jobposting.php',
-    'PreferredJobs'        => $pre_class . 'preferredjobs.php',
+    'PreferredJobs'     => $pre_class . 'preferredjobs.php',
+    'UserAddress'       => $pre_class . 'useraddress.php',
 );

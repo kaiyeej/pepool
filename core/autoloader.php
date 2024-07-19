@@ -10,4 +10,5 @@ $classes = array(
     'JobPosting'        => $pre_class . 'jobposting.php',
     'PreferredJobs'     => $pre_class . 'preferredjobs.php',
     'UserAddress'       => $pre_class . 'useraddress.php',
+    'Notifications'       => $pre_class . 'notification.php',
 );

@@ -137,7 +137,7 @@ class Users extends Connection
         $result = $this->select($this->table, '*', "user_id IN ($user_ids) ORDER BY user_fname ASC");
         while ($row = $result->fetch_assoc()) {
             $row['count'] = $count++;
-            $row['user_photo'] = $row['user_photo'] == "" ? "./worker.png" : $row['user_photo'];
+            //$row['user_photo'] = $row['user_photo'] == "" ? "./worker.png" : $row['user_photo'];
             $row['user_fullname'] = $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];
             $rows[] = $row;
         }

@@ -189,6 +189,17 @@ class Users extends Connection
         return $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];
     }
 
+    public function update_token(){
+        $primary_id = $this->clean($this->inputs['user_id']);
+        $token = $this->clean($this->inputs['token']);
+
+        $form = array(
+            'tokpush_notification_token' => $token
+        );
+
+        return $this->update($this->table, $form, "user_id='$primary_id'");
+    }
+
     public function login()
     {
 

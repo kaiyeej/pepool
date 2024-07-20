@@ -38,6 +38,9 @@ class Transactions extends Connection
             }else if($row['status'] == "F"){
                 $row['status'] = "Finished";
                 $row['color_status'] = "primary";
+            }else if($row['status'] == "D"){
+                $row['status'] = "Denied";
+                $row['color_status'] = "medium";
             }else{
                 $row['status'] = "Pending";
                 $row['color_status'] = "medium";
@@ -76,8 +79,11 @@ class Transactions extends Connection
         $form = array(
             'status' => 'O'
         );
-        $result = $this->update($this->table, $form, "$this->pk='$id'");
+        $result = $this->update($this->table, ['status' => 'D'], "job_post_id='$row[job_post_id]' AND $this->pk != '$id'");
         if($result){
+
+            // update other transactions to denied
+            $this->update($this->table, $form, "$this->pk='$id'");
 
             // insert contract
             

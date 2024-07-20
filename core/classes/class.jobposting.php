@@ -169,6 +169,7 @@ class JobPosting extends Connection
     }
 
     public function finish(){
+        $Notifications = new Notifications;
         $id = $this->clean($this->inputs['id']);
         $rating = $this->clean($this->inputs['rating']);
         $feedback = $this->clean($this->inputs['feedback']);
@@ -193,7 +194,7 @@ class JobPosting extends Connection
             // send notif to user for rating
             $fetch_user = $this->select("tbl_users", "push_notification_token", "user_id='$transaction_row[user_id]'");
             $user_row = $fetch_user->fetch_assoc();
-            $Notifications->push_notification($user_row['push_notification_token'], "You have successfully finished a job with a rating of " . $rating, "Open PePool to see details");
+            $Notifications->push_notification($user_row['push_notification_token'], "You have successfully finished a job with a rating of $rating", "Open PePool to see details");
 
 
             // update job post

@@ -66,7 +66,7 @@ class Notifications extends Connection {
         $response = $this->sendMessage($accessToken, $projectId, $message);
             //echo 'Message sent successfully: ' . print_r($response, true);
         } catch (Exception $e) {
-            //echo 'Error: ' . $e->getMessage();
+            echo 'Error: ' . $e->getMessage();
         }
     }
 

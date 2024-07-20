@@ -67,7 +67,7 @@ class Notifications extends Connection {
         try {
         $accessToken = $this->getAccessToken();
         $response = $this->sendMessage($accessToken, $projectId, $message);
-            //echo 'Message sent successfully: ' . print_r($response, true);
+            echo 'Message sent successfully: ' . print_r($response, true);
         } catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
         }
@@ -90,7 +90,7 @@ class Notifications extends Connection {
         throw new Exception('Curl error: ' . curl_error($ch));
         }
         curl_close($ch);
-        //return json_decode($response, true);
+        return json_decode($response, true);
     }
 }
 

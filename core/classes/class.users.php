@@ -132,7 +132,7 @@ class Users extends Connection
         }
 
     
-        $user_ids = implode(",", $arr_recommeded);
+        $user_ids = sizeof($arr_recommeded) > 0 ? implode(",", $arr_recommeded) : 0;
 
         $rows = array();
         $count = 1;

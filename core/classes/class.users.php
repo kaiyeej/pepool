@@ -157,13 +157,16 @@ class Users extends Connection
         $fetch_jobs_posted = $this->select("tbl_job_posting", "COUNT(job_post_id) as count", "$this->pk = '$primary_id'");
         $job_posted_row = $fetch_jobs_posted->fetch_assoc();
 
-        $fetch_transactions = $this->select("tbl_transactions", "SUM(IF(status='A', 1, 0)) as total_approved, SUM(IF(status='A', 0, 1)) as total_applications", "$this->pk = '$primary_id'");
+        $fetch_approved = $this->select("tbl_transactions", "count(transaction_id) as total_approved", "$this->pk = '$primary_id' AND (status='O' or status='F')");
+        $approved_row = $fetch_approved->fetch_assoc();
+
+        $fetch_transactions = $this->select("tbl_transactions", "count(transaction_id) as total_applications", "$this->pk = '$primary_id'");
         $transactions_row = $fetch_transactions->fetch_assoc();
 
         $row['user_fullname'] = $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];
         $row['member_since'] = date("M d, Y", strtotime($row['date_added']));
         $row['jobs_posted'] = $job_posted_row['count'];
-        $row['total_approved'] = $transactions_row['total_approved'];
+        $row['total_approved'] = $approved_row['total_approved'];
         $row['total_applications'] = $transactions_row['total_applications'];
         return $row;
     }

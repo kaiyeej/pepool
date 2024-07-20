@@ -47,18 +47,21 @@ class Notifications extends Connection {
 
     }
 
-    public function push_notification($device_id, $title, $body){
+    //public function push_notification($device_id, $title, $body){
+    public function push_notification(){
         // Path to your service account JSON key file
+        $title = "New job";
+        $body = "New job near you";
         $serviceAccountPath = 'pepool-mobile-firebase-adminsdk-vc9s2-d72c096ce8.json';
 
         // Your Firebase project ID
         $projectId = 'pepool-mobile';
         // Example message payload
         $message = [
-        'token' => $device_id,
+        'token' => "c0sdHcE-TIuj7Gme6sv-v6:APA91bFVUvx9fxcwTGqBm1xM6Ixso_uKNx89fnfLPd2L7N7CqQKHpulzOP3cfjCU9uqsMEwGHkF3e3Nzn68StgA9lwSc7X7dD6CAcAgs4jH0gXbaII1S2ObudznJ51cCqnuCFWuqxq1S",
         'notification' => [
-            'title' => $title,
-            'body' => $body,
+            'title' => "$title",
+            'body' => "$body",
             ],
         ];
         try {

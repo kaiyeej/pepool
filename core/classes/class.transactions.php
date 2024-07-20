@@ -86,6 +86,9 @@ class Transactions extends Connection
             $user_row = $fetch_user->fetch_assoc();
             $Notifications->push_notification($user_row['push_notification_token'], "Congratulations! Your job application was accepted.", "Open PePool to see details");
 
+            // update user status
+            $this->update("tbl_users", ['user_status' => 'O'], "user_id='$row[user_id]'");
+
             $form = array(
                 'job_post_status' => 'O'
             );
@@ -134,6 +137,7 @@ class Transactions extends Connection
     }
 
     public function rate_employer(){
+        $Notifications = new Notifications;
         $id = $this->clean($this->inputs['transaction_id']);
         $rating = $this->clean($this->inputs['rating']);
         $feedback = $this->clean($this->inputs['feedback']);
@@ -156,6 +160,11 @@ class Transactions extends Connection
             $fetch_emp = $this->select("tbl_job_posting", "AVG(job_employer_rating) as employer_rating", "user_id='$job_post_row[user_id]' AND job_post_status='F'");
             $emp_row = $fetch_emp->fetch_assoc();
             $this->update("tbl_users", ['employer_rating' => $emp_row['employer_rating']], "user_id='$job_post_row[user_id]'");
+
+            // send notif to user for rating
+            $fetch_user = $this->select("tbl_users", "push_notification_token", "user_id='$job_post_row[user_id]'");
+            $user_row = $fetch_user->fetch_assoc();
+            $Notifications->push_notification($user_row['push_notification_token'], "You have got a new rating of $rating from a worker", "Open PePool to see details");
         }
 
         return $res;

@@ -189,7 +189,7 @@ class JobPosting extends Connection
             // calculate user rating
             $fetch_rating = $this->select("tbl_transactions", "AVG(transaction_rating) as user_rating", "user_id='$transaction_row[user_id]' AND status='F'");
             $user_rating = $fetch_rating->fetch_assoc();
-            $this->update("tbl_users", ['user_rating' => $user_rating['user_rating']], "user_id='$transaction_row[user_id]'");
+            $this->update("tbl_users", ['user_rating' => $user_rating['user_rating'], 'user_status' => 'A'], "user_id='$transaction_row[user_id]'");
 
             // send notif to user for rating
             $fetch_user = $this->select("tbl_users", "push_notification_token", "user_id='$transaction_row[user_id]'");

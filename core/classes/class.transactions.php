@@ -28,7 +28,7 @@ class Transactions extends Connection
     public function show_filtered(){
         $user_id = $this->clean($this->inputs['user_id']);
         $rows = array();
-        $result = $this->select("tbl_transactions t LEFT JOIN tbl_job_posting jp ON t.job_post_id=jp.job_post_id LEFT JOIN tbl_job_types jt ON jt.job_type_id=jp.job_type_id LEFT JOIN tbl_users u ON u.user_id=jp.user_id", "*, t.date_added as transaction_date","t.user_id='$user_id'");
+        $result = $this->select("tbl_transactions t LEFT JOIN tbl_job_posting jp ON t.job_post_id=jp.job_post_id LEFT JOIN tbl_job_types jt ON jt.job_type_id=jp.job_type_id LEFT JOIN tbl_users u ON u.user_id=jp.user_id", "*, t.date_added as transaction_date, t.date_added as date_added","t.user_id='$user_id'");
         while ($row = $result->fetch_assoc()) {
             $row['transaction_date'] = date("M d, Y h:i A", strtotime($row['transaction_date']));
             $row['employer_name'] = $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];
@@ -70,6 +70,7 @@ class Transactions extends Connection
     }
 
     public function accept(){
+        $Notifications = new Notifications;
         $id = $this->clean($this->inputs['id']);
         $row = $this->rows($id);
         $form = array(
@@ -80,6 +81,10 @@ class Transactions extends Connection
 
             // insert contract
             
+            // notify user
+            $fetch_user = $this->select("tbl_users", "push_notification_token", "user_id='$row[user_id]'");
+            $user_row = $fetch_user->fetch_assoc();
+            $Notifications->push_notification($user_row['push_notification_token'], "Congratulations! Your job application was accepted.", "Open PePool to see details");
 
             $form = array(
                 'job_post_status' => 'O'
@@ -128,8 +133,34 @@ class Transactions extends Connection
         }
     }
 
+    public function rate_employer(){
+        $id = $this->clean($this->inputs['transaction_id']);
+        $rating = $this->clean($this->inputs['rating']);
+        $feedback = $this->clean($this->inputs['feedback']);
 
+        $fetch_transaction = $this->select($this->table, "job_post_id", "transaction_id='$id'");
+        $transaction_row = $fetch_transaction->fetch_assoc();
 
+        $fetch_job_post = $this->select("tbl_job_posting", "user_id, job_post_id", "job_post_id='$transaction_row[job_post_id]'");
+        $job_post_row = $fetch_job_post->fetch_assoc();
+
+        $form = array(
+            'job_employer_rating' => $rating,
+            'job_feedback' => $feedback
+        );
+
+        $res = $this->update("tbl_job_posting", $form, "job_post_id='$job_post_row[job_post_id]'");
+
+        if($res){
+            // update employer rate
+            $fetch_emp = $this->select("tbl_job_posting", "AVG(job_employer_rating) as employer_rating", "user_id='$job_post_row[user_id]' AND job_post_status='F'");
+            $emp_row = $fetch_emp->fetch_assoc();
+            $this->update("tbl_users", ['employer_rating' => $emp_row['employer_rating']], "user_id='$job_post_row[user_id]'");
+        }
+
+        return $res;
+        
+    }
 
 
     public function edit()

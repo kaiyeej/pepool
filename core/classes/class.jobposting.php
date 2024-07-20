@@ -92,7 +92,7 @@ class JobPosting extends Connection
         $map_radius = $this->clean($this->inputs['map_radius']) * 1;
         $rows = array();
         $count = 1;
-        $result = $this->select("$this->table h LEFT JOIN tbl_job_types jt ON h.job_type_id=jt.job_type_id LEFT JOIN tbl_users u ON h.user_id=u.user_id", "h.*, jt.job_type, u.user_fname, u.user_mname, u.user_lname, u.user_email, u.user_photo, ACOS(SIN(('$lat' * (PI()/180))) * SIN(((SUBSTRING_INDEX(job_post_coordinates, ',', 1) * 1) * (PI()/180))) + COS(('$lat' * (PI()/180))) * COS(((SUBSTRING_INDEX(job_post_coordinates, ',', 1) * 1) * (PI()/180))) * COS(((((SUBSTRING_INDEX(job_post_coordinates, ',', -1) * 1) - '$lng') * PI()) / 180))) * 6371 as calculated_distance", "h.job_post_id > 0 HAVING calculated_distance <= '$map_radius' ORDER BY h.date_added DESC");
+        $result = $this->select("$this->table h LEFT JOIN tbl_job_types jt ON h.job_type_id=jt.job_type_id LEFT JOIN tbl_users u ON h.user_id=u.user_id", "h.*, jt.job_type, u.user_fname, u.user_mname, u.user_lname, u.user_email, u.user_photo, ACOS(SIN(('$lat' * (PI()/180))) * SIN(((SUBSTRING_INDEX(job_post_coordinates, ',', 1) * 1) * (PI()/180))) + COS(('$lat' * (PI()/180))) * COS(((SUBSTRING_INDEX(job_post_coordinates, ',', 1) * 1) * (PI()/180))) * COS(((((SUBSTRING_INDEX(job_post_coordinates, ',', -1) * 1) - '$lng') * PI()) / 180))) * 6371 as calculated_distance", "h.job_post_status='P' HAVING calculated_distance <= '$map_radius' ORDER BY h.date_added DESC");
         while ($row = $result->fetch_assoc()) {
             $row['count'] = $count++;
             $row['employer_name'] =  $row['user_fname'] . " " . $row['user_lname'];
@@ -189,6 +189,13 @@ class JobPosting extends Connection
             $fetch_rating = $this->select("tbl_transactions", "AVG(transaction_rating) as user_rating", "user_id='$transaction_row[user_id]' AND status='F'");
             $user_rating = $fetch_rating->fetch_assoc();
             $this->update("tbl_users", ['user_rating' => $user_rating['user_rating']], "user_id='$transaction_row[user_id]'");
+
+            // send notif to user for rating
+            $fetch_user = $this->select("tbl_users", "push_notification_token", "user_id='$transaction_row[user_id]'");
+            $user_row = $fetch_user->fetch_assoc();
+            $Notifications->push_notification($user_row['push_notification_token'], "You have successfully finished a job with a rating of ${rating}", "Open PePool to see details");
+
+
             // update job post
             return $this->update($this->table, ['job_post_status' => 'F'], "job_post_id='$id'");
         }

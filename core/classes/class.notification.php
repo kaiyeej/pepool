@@ -47,27 +47,24 @@ class Notifications extends Connection {
 
     }
 
-    //public function push_notification($device_id, $title, $body){
-    public function push_notification(){
+    public function push_notification($device_id, $title, $body){
         // Path to your service account JSON key file
-        $title = "New job";
-        $body = "New job near you";
         $serviceAccountPath = 'pepool-mobile-firebase-adminsdk-vc9s2-d72c096ce8.json';
 
         // Your Firebase project ID
         $projectId = 'pepool-mobile';
         // Example message payload
         $message = [
-        'token' => "d6Sn5ZecRjyFRoi0p6-TF9:APA91bG_BYd54M0kp8sXgJxhBF0aUHD_HbK0l-IznW9IgGS-UojSMS6YndvQHvyGLMEf2Dp-V6CKKOAYQllrI15Msmn6T_Yg1nVTioYCHm-XVF4_WhSaxBGRuqzRJYTXqhu4YraTrNiw",
+        'token' => $device_id,
         'notification' => [
-            'title' => "$title",
-            'body' => "$body",
+            'title' => $title,
+            'body' => $body,
             ],
         ];
         try {
         $accessToken = $this->getAccessToken();
         $response = $this->sendMessage($accessToken, $projectId, $message);
-            echo 'Message sent successfully: ' . print_r($response, true);
+            //echo 'Message sent successfully: ' . print_r($response, true);
         } catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
         }
@@ -90,7 +87,16 @@ class Notifications extends Connection {
         throw new Exception('Curl error: ' . curl_error($ch));
         }
         curl_close($ch);
-        return json_decode($response, true);
+        //return json_decode($response, true);
+    }
+
+    public function send_notification_to_users(){
+        $job_type_id = $this->clean($this->inputs['job_type_id']);
+        $job_title = $this->clean($this->inputs['job_title']);
+        $fetch = $this->select("tbl_preferred_jobs p LEFT JOIN tbl_users u ON p.user_id=u.user_id", "u.push_notification_token", "p.job_type_id='$job_type_id' AND u.push_notification_token != '' GROUP BY p.user_id");
+        while($row = $fetch->fetch_assoc()){
+            $this->push_notification($device_id, "New job available near you", $job_title);
+        }
     }
 }
 

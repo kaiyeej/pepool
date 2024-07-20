@@ -43,8 +43,9 @@ class JobPosting extends Connection
             if($response == 1){
                 // send notif
                 $Notifications = new Notifications;
-                $Notifications->push_notification("c0sdHcE-TIuj7Gme6sv-v6:APA91bFVUvx9fxcwTGqBm1xM6Ixso_uKNx89fnfLPd2L7N7CqQKHpulzOP3cfjCU9uqsMEwGHkF3e3Nzn68StgA9lwSc7X7dD6CAcAgs4jH0gXbaII1S2ObudznJ51cCqnuCFWuqxq1S", $job_title, "New job available near you.");
-                //push_notification("Test message", "some body of the message", "c0sdHcE-TIuj7Gme6sv-v6:APA91bFVUvx9fxcwTGqBm1xM6Ixso_uKNx89fnfLPd2L7N7CqQKHpulzOP3cfjCU9uqsMEwGHkF3e3Nzn68StgA9lwSc7X7dD6CAcAgs4jH0gXbaII1S2ObudznJ51cCqnuCFWuqxq1S");
+                $Notifications->inputs['job_type_id'] = $job_type_id;
+                $Notifications->inputs['job_title'] = $job_title;
+                $Notifications->send_notification_to_users();
             }
 
             return $response;

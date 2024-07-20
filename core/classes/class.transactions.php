@@ -28,7 +28,7 @@ class Transactions extends Connection
     public function show_filtered(){
         $user_id = $this->clean($this->inputs['user_id']);
         $rows = array();
-        $result = $this->select("tbl_transactions t LEFT JOIN tbl_job_posting jp ON t.job_post_id=jp.job_post_id LEFT JOIN tbl_job_types jt ON jt.job_type_id=jp.job_type_id LEFT JOIN tbl_users u ON u.user_id=jp.user_id", "*, t.date_added as transaction_date, t.date_added as date_added","t.user_id='$user_id'");
+        $result = $this->select("tbl_transactions t LEFT JOIN tbl_job_posting jp ON t.job_post_id=jp.job_post_id LEFT JOIN tbl_job_types jt ON jt.job_type_id=jp.job_type_id LEFT JOIN tbl_users u ON u.user_id=jp.user_id", "*, t.date_added as transaction_date, t.date_added as date_added","t.user_id='$user_id' ORDER BY t.date_added DESC");
         while ($row = $result->fetch_assoc()) {
             $row['transaction_date'] = date("M d, Y h:i A", strtotime($row['transaction_date']));
             $row['employer_name'] = $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];

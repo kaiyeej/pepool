@@ -16,12 +16,12 @@ class JobPosting extends Connection
             $user_address_id = $this->clean($this->inputs['user_address_id']);
             $current_coordinates = $this->clean($this->inputs['job_post_coordinates']);
             
-            if($user_address_id == 0){
-                $job_coordinates = $current_coordinates;
-            }else{
+            if($user_address_id > 0){
                 $UserAddress = new UserAddress;
                 $user_address_row = $UserAddress->rows($user_address_id);
                 $job_coordinates = $user_address_row['address_coordinates'];
+            }else{
+                $job_coordinates = $current_coordinates;
             }
             
             $form = array(

@@ -21,7 +21,7 @@ class JobPosting extends Connection
             }else{
                 $UserAddress = new UserAddress;
                 $user_address_row = $UserAddress->rows($user_address_id);
-                $job_coordinates = $user_address_row['coordinates'];
+                $job_coordinates = $user_address_row['address_coordinates'];
             }
             
             $form = array(

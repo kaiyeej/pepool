@@ -58,7 +58,7 @@ class Notifications extends Connection {
         $projectId = 'pepool-mobile';
         // Example message payload
         $message = [
-        'token' => "c0sdHcE-TIuj7Gme6sv-v6:APA91bFVUvx9fxcwTGqBm1xM6Ixso_uKNx89fnfLPd2L7N7CqQKHpulzOP3cfjCU9uqsMEwGHkF3e3Nzn68StgA9lwSc7X7dD6CAcAgs4jH0gXbaII1S2ObudznJ51cCqnuCFWuqxq1S",
+        'token' => "d6Sn5ZecRjyFRoi0p6-TF9:APA91bG_BYd54M0kp8sXgJxhBF0aUHD_HbK0l-IznW9IgGS-UojSMS6YndvQHvyGLMEf2Dp-V6CKKOAYQllrI15Msmn6T_Yg1nVTioYCHm-XVF4_WhSaxBGRuqzRJYTXqhu4YraTrNiw",
         'notification' => [
             'title' => "$title",
             'body' => "$body",

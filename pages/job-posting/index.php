@@ -80,7 +80,7 @@
                             '<div class="row g-0">' +
                             '<div class="col-auto">' +
                             '<div class="card-body">' +
-                            '<div class="avatar avatar-md" style="background-image:url(./static/jobs/job-2.png)"></div>' +
+                            '<div class="avatar avatar-md"><i class="ti ti-briefcase"></i></div>' +
                             '</div>' +
                             '</div>' +
                             '<div class="col">' +

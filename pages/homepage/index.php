@@ -9,9 +9,9 @@ $Homepage = new Homepage;
                 <div class="page-pretitle">
                     Overview
                 </div>
-                <h2 class="page-title" style="color: #9c27b0;">
+                <!-- <h2 class="page-title" style="color: #9c27b0;">
                     PePool: A Mobile-Based Application for Local Pool of Manpower and Services
-                </h2>
+                </h2> -->
             </div>
         </div>
     </div>
@@ -120,10 +120,10 @@ $Homepage = new Homepage;
                     </div>
                     <div class="card-body">
                         <div class="row align-items-center">
-                            <div class="col-10">
+                            <div class="col-10" style="color: #9c27b0;">
                                 <h3 class="h1">PePool</h3>
                                 <div class="markdown text-muted">
-                                    PePool: A Mobile-Based Application for Local Pool of Manpower and Services
+                                    A Mobile-Based Application for Local Pool of Manpower and Services
                                 </div>
                             </div>
                         </div>

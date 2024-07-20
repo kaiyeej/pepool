@@ -25,6 +25,8 @@ $Users = new Users;
   <link href="dist/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
   <link rel="stylesheet" href="dist/sweetalert/sweetalert.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  
+  <link rel="shortcut icon" href="./static/logo.png" />
   <style>
     @import url('https://rsms.me/inter/inter.css');
 

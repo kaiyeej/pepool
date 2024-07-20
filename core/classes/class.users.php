@@ -123,29 +123,27 @@ class Users extends Connection
     {
         $rows = array();
         $ids = $this->clean($this->inputs['ids']);
-        if(sizeof($ids) > 0){
-            $arr_recommeded = array();
-            foreach ($ids as $value) {
-                $user_id = $value['itemId'];
-                if($user_id > 0){
-                    array_push($arr_recommeded, $user_id);
-                }
+        $arr_recommeded = array();
+        foreach ($ids as $value) {
+            $user_id = $value['itemId'];
+            if($user_id > 0){
+                array_push($arr_recommeded, $user_id);
             }
-
-        
-            $user_ids = implode(",", $arr_recommeded);
-
-            $rows = array();
-            $count = 1;
-            $result = $this->select($this->table, '*', "user_id IN ($user_ids) ORDER BY user_fname ASC");
-            while ($row = $result->fetch_assoc()) {
-                $row['count'] = $count++;
-                //$row['user_photo'] = $row['user_photo'] == "" ? "./worker.png" : $row['user_photo'];
-                $row['user_fullname'] = $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];
-                $rows[] = $row;
-            }
-            return $rows;
         }
+
+    
+        $user_ids = implode(",", $arr_recommeded);
+
+        $rows = array();
+        $count = 1;
+        $result = $this->select($this->table, '*', "user_id IN ($user_ids) ORDER BY user_fname ASC");
+        while ($row = $result->fetch_assoc()) {
+            $row['count'] = $count++;
+            //$row['user_photo'] = $row['user_photo'] == "" ? "./worker.png" : $row['user_photo'];
+            $row['user_fullname'] = $row['user_fname'] . " " . $row['user_mname'] . " " . $row['user_lname'];
+            $rows[] = $row;
+        }
+        return $rows;
     }
 
     public function view()

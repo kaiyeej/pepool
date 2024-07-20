@@ -42,7 +42,7 @@ class UserAddress extends Connection {
 
     public function rows($primary_id)
     {
-        $result = $this->select($self->table, "*", "$this->pk  = '$primary_id'");
+        $result = $this->select($this->table, "*", "$this->pk  = '$primary_id'");
         $row = $result->fetch_assoc();
         return $row;
     }

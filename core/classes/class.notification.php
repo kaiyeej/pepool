@@ -93,9 +93,9 @@ class Notifications extends Connection {
     public function send_notification_to_users(){
         $job_type_id = $this->clean($this->inputs['job_type_id']);
         $job_title = $this->clean($this->inputs['job_title']);
-        $fetch = $this->select("tbl_preferred_jobs p LEFT JOIN tbl_users u ON p.user_id=u.user_id", "u.push_notification_token", "p.job_type_id='$job_type_id' AND u.push_notification_token != '' GROUP BY p.user_id");
+        $fetch = $this->select("tbl_preferred_jobs p LEFT JOIN tbl_users u ON p.user_id=u.user_id", "u.push_notification_token as token", "p.job_type_id='$job_type_id' AND u.push_notification_token != '' GROUP BY p.user_id");
         while($row = $fetch->fetch_assoc()){
-            $this->push_notification($device_id, "New job available near you", $job_title);
+            $this->push_notification($row['token'], "New job available near you", $job_title);
         }
     }
 }

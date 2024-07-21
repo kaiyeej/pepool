@@ -96,7 +96,10 @@
                     "data": "user_fullname"
                 },
                 {
-                    "data": "user_category"
+                    // "data": "user_category"
+                    "mRender": function(data, type, row) {
+                        return row.user_category == "A" ? "ADMIN" : "USERS";  //"<center><button class='btn btn-primary' onclick='getUserDetails(" + row.user_id + ")'><span class='mdi mdi-grease-pencil'></span></button></center>";
+                     }
                 },
                 {
                     "data": "username"

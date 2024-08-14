@@ -74,6 +74,7 @@ class Transactions extends Connection
 
     public function accept(){
         $Notifications = new Notifications;
+        $Chats = new Chats;
         $id = $this->clean($this->inputs['id']);
         $row = $this->rows($id);
         $form = array(
@@ -87,6 +88,13 @@ class Transactions extends Connection
 
             // insert contract
             
+
+            // insert welcome message
+            $Chats->inputs['sender_id'] = 0;
+            $Chats->inputs['transaction_id'] = $id;
+            $Chats->inputs['content'] = "Welcome to PePool! Your job application has been accepted. You may now start your transaction. This is an auto-generated message.";
+            $Chats->add();
+
             // notify user
             $fetch_user = $this->select("tbl_users", "push_notification_token", "user_id='$row[user_id]'");
             $user_row = $fetch_user->fetch_assoc();

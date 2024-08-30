@@ -254,10 +254,10 @@ class Users extends Connection
 
     public function register(){
         $user_email = $this->clean($this->inputs['user_email']);
-        $is_exist = $this->select($this->table, $this->pk, "user_email = '$user_email'");
+        $is_exist = $this->select($this->table, "*", "user_email = '$user_email'");
         if ($is_exist->num_rows > 0) {
-            $user_row = $is_exist->fetch_array();
-            return $user_row[0];
+            $user_row = $is_exist->fetch_assoc();
+            return $user_row;
         } else {
             //$pass = clean($this->inputs['password']);
             $form = array(

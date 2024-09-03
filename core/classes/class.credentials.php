@@ -68,7 +68,15 @@ class Credentials extends Connection {
     public function remove_unique()
     {
         $id = $this->clean($this->inputs['id']);
-        return $this->delete($this->table, "$this->pk='$id'");
+        $row = $this->rows($id);
+        $sql = $this->delete($this->table, "$this->pk='$id'");
+        if($sql){
+            if($row['file_name'] !== ""){
+                unlink("../assets/credentials/" . $row['file_name']);
+            }
+        }
+
+        return $sql;
     }
 }
 

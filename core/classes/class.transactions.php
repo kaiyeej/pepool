@@ -75,15 +75,23 @@ class Transactions extends Connection
     public function accept(){
         $Notifications = new Notifications;
         $Chats = new Chats;
+        $JobPosting = new JobPosting;
+
         $id = $this->clean($this->inputs['id']);
         $row = $this->rows($id);
         $form = array(
             'status' => 'O'
         );
-        $result = $this->update($this->table, ['status' => 'D'], "job_post_id='$row[job_post_id]' AND $this->pk != '$id'");
-        if($result){
+        
+        $JobPosting->inputs['id'] = $row['job_post_id'];
+        $job_post_row = $JobPosting->view();
 
-            // update other transactions to denied
+        // count number of workers
+        $fetch_count = $this->select($this->table, "COUNT(transaction_id)", "job_post_id='$row[job_post_id]' AND status='O'");
+        $count_row = $fetch_count->fetch_array();
+        if($count_row > $job_post_row['number_of_workers']){
+
+            // update transaction to ongoing
             $this->update($this->table, $form, "$this->pk='$id'");
 
             // insert contract
@@ -107,6 +115,8 @@ class Transactions extends Connection
                 'job_post_status' => 'O'
             );
             return $this->update("tbl_job_posting", $form, "job_post_id='$row[job_post_id]'");
+        }else{
+            return -1;
         }
     }
 
@@ -118,7 +128,7 @@ class Transactions extends Connection
         $header_arr = array();
         $list_of_worker_ids = array();
         array_push($header_arr, 'list_of_workers');
-        $fetch_workers = $this->select("tbl_preferred_jobs", "user_id", "job_type_id='$id' GROUP BY user_id ORDER BY user_id ASC");
+        $fetch_workers = $this->select("tbl_preferred_jobs", "user_id", "job_type_id='$id' AND user_id != '$user_id' GROUP BY user_id ORDER BY user_id ASC");
         while($worker_row = $fetch_workers->fetch_assoc()){
             array_push($header_arr, $worker_row['user_id']);
             array_push($list_of_worker_ids, $worker_row['user_id']);
@@ -132,7 +142,7 @@ class Transactions extends Connection
 
             $arr = array();
 
-            $fetch = $this->select("$this->table t LEFT JOIN tbl_job_posting p ON t.job_post_id=p.job_post_id", "t.user_id as worker_id, p.user_id as client_id, AVG(t.transaction_rating) as transaction_rating", "p.job_type_id='$id' AND t.status='F' AND t.user_id IN ($ids) GROUP BY p.user_id");
+            $fetch = $this->select("$this->table t LEFT JOIN tbl_job_posting p ON t.job_post_id=p.job_post_id", "t.user_id as worker_id, p.user_id as client_id, AVG(t.transaction_rating) as transaction_rating", "p.job_type_id='$id' AND t.status='F' AND t.user_id != '$user_id' AND t.user_id IN ($ids) GROUP BY p.user_id");
             while($row = $fetch->fetch_assoc()){
                 $ratings_for_workers = array();
                 $ratings_for_workers = array_fill(0, sizeof($list_of_worker_ids) + 1, 0);
@@ -141,7 +151,13 @@ class Transactions extends Connection
                 $ratings_for_workers[$arr_index] = $row['transaction_rating'] > 3 ? 1 : 0;
                 // if($row['transaction_rating'] >= 4){
                 //     $rating = 1;
-                // }else if($row[''])
+                // }else if($row['transaction_rating'] == 0){
+                //     $rating = 0;
+                // }else{
+                //     $rating = -1;
+                // }
+
+                //$ratings_for_workers[$arr_index] = $rating;
                 array_push($rows, $ratings_for_workers);
                 //$arr[] = $row;
             }
@@ -213,47 +229,11 @@ class Transactions extends Connection
         return $this->update($this->table, $form, "$this->pk IN($ids)");
     }
 
-    public function show()
-    {
+    public function show_contract(){
+        $id = $this->clean($this->inputs['id']);
         $rows = array();
-        $Users = new Users();
-        $rows = array();
-        $start_date = $this->inputs['start_date'];
-        $end_date = $this->inputs['end_date'];
-        $type = $this->inputs['type'];
-
-        if($type == "T"){
-            $status = $this->inputs['status_t'];
-    
-            if($status < 0){
-                $param = "date_added BETWEEN '$start_date' AND DATE_ADD('$end_date', INTERVAL 1 DAY)";
-            }else{
-                $param = "status = '$status' AND date_added BETWEEN '$start_date' AND DATE_ADD('$end_date', INTERVAL 1 DAY)";
-            }
-            
-        }else{
-            
-            $user_id = $this->inputs['user_id'];
-            if($user_id < 0){
-                $param = "date_added BETWEEN '$start_date' AND DATE_ADD('$end_date', INTERVAL 1 DAY)";
-            }else{
-                if($type == "D"){
-                    $param = "driver_id = '$user_id' AND date_added BETWEEN '$start_date' AND DATE_ADD('$end_date', INTERVAL 1 DAY)";
-                }else if($type == "U"){
-                    $param = "user_id = '$user_id' AND date_added BETWEEN '$start_date' AND DATE_ADD('$end_date', INTERVAL 1 DAY)";
-                }
-            }
-        }
-
-
-        $result = $this->select($this->table, '*', $param);
-        while ($row = $result->fetch_assoc()) {
-            $review = $this->ratings($row['transaction_id']);
-
-            $row['driver'] = $Users->getUser($row['driver_id']);
-            $row['user'] = $Users->getUser($row['user_id']);
-            $row['rating'] = $review[0] > 0 ?  $review[0]."/5" : "---";
-            $row['remarks'] = $review[1];
+        $fetch = $this->select("tbl_job_posting j LEFT JOIN tbl_users u1 ON j.user_id=u1.user_id LEFT JOIN tbl_transactions t ON t.job_post_id=j.job_post_id LEFT JOIN tbl_users u2 ON t.user_id=u2.user_id", "j.*, t.transaction_id, t.reference_number, t.status, u1.user_id AS client_id, u1.user_fname AS client_fname, u1.user_mname AS client_mname, u1.user_lname AS client_lname, u1.user_email AS client_email, u1.user_address AS client_address, u1.user_contact_number AS client_contact_number, u1.e_signature AS client_esignature, u2.user_id AS worker_id, u2.user_fname AS worker_fname, u2.user_mname AS worker_mname, u2.user_lname AS worker_lname, u2.user_email AS worker_email, u2.user_address AS worker_address, u2.user_contact_number AS worker_contact_number, u2.e_signature AS worker_esignature", "j.job_post_id='$id'");
+        while($row = $fetch->fetch_assoc()){
             $rows[] = $row;
         }
         return $rows;

@@ -1,6 +1,6 @@
 <?php
-define('APP_FOLDER', '');
-define('BASE_URL', 'https://pepool.juancoder.com/'.APP_FOLDER.'/');
+define('APP_FOLDER', 'pepool');
+define('BASE_URL', 'http://localhost/'.APP_FOLDER.'/');
 define("BASE_PATH", __DIR__ . "/../");
 
 // define("HOST", "localhost");
@@ -8,7 +8,7 @@ define("BASE_PATH", __DIR__ . "/../");
 // define("PASSWORD", "");
 // define("DBNAME", "pepool_db");
 
-define("HOST", "localhost");
+define("HOST", "185.229.112.70");
 define("USER", "u814036432_pepool_root");
 define("PASSWORD", "7hISt83J8m;!");
 define("DBNAME", "u814036432_pepool_db");

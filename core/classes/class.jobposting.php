@@ -11,14 +11,11 @@ class JobPosting extends Connection
     {
         if(isset($this->inputs['user_id'])){
             $UserAddress = new UserAddress;
-            $job_title = $this->clean($this->inputs['job_title']);
-            $job_type_id = $this->clean($this->inputs['job_type_id']);
             $user_id = $this->clean($this->inputs['user_id']);
+            $job_type_id = $this->clean($this->inputs['job_type_id']);
+            $job_title = $this->clean($this->inputs['job_title']);
             $user_address_id = $this->clean($this->inputs['user_address_id']);
-            $current_coordinates = $this->clean($this->inputs['job_post_coordinates']);
-            
             if($user_address_id > 0){
-                
                 $user_address_row = $UserAddress->rows($user_address_id);
                 $job_coordinates = $user_address_row['address_coordinates'];
             }else{
@@ -35,6 +32,7 @@ class JobPosting extends Connection
                 'job_term'              => $this->clean($this->inputs['job_term']),
                 'start_date'            => $this->clean($this->inputs['start_date']),
                 'end_date'              => $this->clean($this->inputs['end_date']),
+                'number_of_workers'     => $this->clean($this->inputs['number_of_workers']),
                 'job_post_status'       => 'P',
                 'date_added'            => $this->getCurrentDate()
             );
@@ -176,31 +174,30 @@ class JobPosting extends Connection
         $feedback = $this->clean($this->inputs['feedback']);
 
         $fetch_transaction = $this->select("tbl_transactions", "transaction_id, user_id", "job_post_id='$id' AND status='O'");
-        $transaction_row = $fetch_transaction->fetch_assoc();
+        while($transaction_row = $fetch_transaction->fetch_assoc()){
+            $transaction_form = array(
+                'status' => 'F',
+                'transaction_rating' => $rating,
+                'feedback'  => $feedback
+            );
 
-        $transaction_form = array(
-            'status' => 'F',
-            'transaction_rating' => $rating,
-            'feedback'  => $feedback
-        );
+            $res = $this->update("tbl_transactions", $transaction_form, "transaction_id='$transaction_row[transaction_id]'");
 
-        $res = $this->update("tbl_transactions", $transaction_form, "transaction_id='$transaction_row[transaction_id]'");
-
-        if($res){
-            // calculate user rating
-            $fetch_rating = $this->select("tbl_transactions", "AVG(transaction_rating) as user_rating", "user_id='$transaction_row[user_id]' AND status='F'");
-            $user_rating = $fetch_rating->fetch_assoc();
-            $this->update("tbl_users", ['user_rating' => $user_rating['user_rating'], 'user_status' => 'A'], "user_id='$transaction_row[user_id]'");
-
-            // send notif to user for rating
-            $fetch_user = $this->select("tbl_users", "push_notification_token", "user_id='$transaction_row[user_id]'");
-            $user_row = $fetch_user->fetch_assoc();
-            $Notifications->push_notification($user_row['push_notification_token'], "You have successfully finished a job with a rating of $rating", "Open PePool to see details");
-
-
-            // update job post
-            return $this->update($this->table, ['job_post_status' => 'F'], "job_post_id='$id'");
+            if($res){
+                // calculate user rating
+                $fetch_rating = $this->select("tbl_transactions", "AVG(transaction_rating) as user_rating", "user_id='$transaction_row[user_id]' AND status='F'");
+                $user_rating = $fetch_rating->fetch_assoc();
+                $this->update("tbl_users", ['user_rating' => $user_rating['user_rating'], 'user_status' => 'A'], "user_id='$transaction_row[user_id]'");
+    
+                // send notif to user for rating
+                $fetch_user = $this->select("tbl_users", "push_notification_token", "user_id='$transaction_row[user_id]'");
+                $user_row = $fetch_user->fetch_assoc();
+                $Notifications->push_notification($user_row['push_notification_token'], "You have successfully finished a job with a rating of $rating", "Open PePool to see details");
+            }
         }
+
+        // update job post
+        return $this->update($this->table, ['job_post_status' => 'F'], "job_post_id='$id'");
     }
 
     public function cancel(){
@@ -212,5 +209,18 @@ class JobPosting extends Connection
         }
 
         return $res;
+    }
+
+    public function create_private_key(){
+        $form_data = json_encode($this->inputs['form_data']);
+        $id = $this->clean($this->inputs['id']);
+        if(isset($id)){
+            $file_name = $id . ".json";
+            $sql = $this->update($this->table, ['private_key_file' => $file_name], "job_post_id='$id'");
+            if($sql){
+                file_put_contents("../assets/private_keys/" . $file_name, $form_data);
+            }
+            return $sql;
+        }
     }
 }

@@ -125,7 +125,7 @@ class Users extends Connection
         $ids = $this->clean($this->inputs['ids']);
         $arr_recommeded = array();
         foreach ($ids as $value) {
-            $user_id = $value['itemId'] * 1;
+            $user_id = $value == null ? 0 : $value['itemId'] * 1;
             if($user_id > 0){
                 array_push($arr_recommeded, $user_id);
             }

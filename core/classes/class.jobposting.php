@@ -215,6 +215,9 @@ class JobPosting extends Connection
         $form_data = json_encode($this->inputs['form_data']);
         $id = $this->clean($this->inputs['id']);
         if(isset($id)){
+            // update signed date
+            $this->update($this->table, ['date_signed' => $this->getCurrentDate()], "job_post_id='$id' AND date_signed='0000-00-00'");
+
             $file_name = $id . ".json";
             $sql = $this->update($this->table, ['private_key_file' => $file_name], "job_post_id='$id'");
             if($sql){

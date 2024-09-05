@@ -40,7 +40,7 @@ class JobPosting extends Connection
 
             $response = $this->insertIfNotExist($this->table, $form, "job_type_id='$job_type_id' AND job_post_status='P' AND user_id='$user_id'", "Y");
 
-            if($response == 1){
+            if($response > 0){
                 // send notif
                 $Notifications = new Notifications;
                 $Notifications->inputs['job_type_id'] = $job_type_id;

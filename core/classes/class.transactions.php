@@ -9,6 +9,7 @@ class Transactions extends Connection
     public function add()
     {
         if(isset($this->inputs['job_post_id'])){
+            $Notifications = new Notifications;
             $job_post_id  = $this->clean($this->inputs['job_post_id']);
             $user_id      = $this->clean($this->inputs['user_id']);
             $form = array(
@@ -20,6 +21,11 @@ class Transactions extends Connection
                 'transaction_rating'   => 0,
                 'date_added'           => $this->getCurrentDate()
             );
+
+            // add notif for new applicant
+            $fetch_token = $this->select("tbl_job_posting j LEFT JOIN tbl_users u ON j.user_id=u.user_id", "u.push_notification_token as token, j.job_title AS title", "j.job_post_id='$job_post_id'");
+            $token_row = $fetch_token->fetch_assoc();
+            $Notifications->push_notification($token_row['token'], "You have new applicant for " . $token_row['title'], "Open PePool to see details");
     
             return $this->insertIfNotExist($this->table, $form, "job_post_id='$job_post_id' AND user_id='$user_id'");
         }

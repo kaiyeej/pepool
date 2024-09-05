@@ -30,6 +30,7 @@ class Chats extends Connection {
         $count = 1;
         $result = $this->select($this->table, '*', "transaction_id='$id' ORDER BY date_added ASC");
         while ($row = $result->fetch_assoc()) {
+            $row['content'] = utf8_encode($row['content']);
             $rows[] = $row;
         }
         return $rows;

@@ -233,7 +233,7 @@ class JobPosting extends Connection
         $lat = $this->clean($this->inputs['lat']);
         $lng = $this->clean($this->inputs['lng']);
         $rows = array();
-        $fetch = $this->select("tbl_job_posting p LEFT JOIN tbl_users u ON p.user_id=u.user_id", "*, ACOS(SIN(('$lat' * (PI()/180))) * SIN(((SUBSTRING_INDEX(job_post_coordinates, ',', 1) * 1) * (PI()/180))) + COS(('$lat' * (PI()/180))) * COS(((SUBSTRING_INDEX(job_post_coordinates, ',', 1) * 1) * (PI()/180))) * COS(((((SUBSTRING_INDEX(job_post_coordinates, ',', -1) * 1) - '$lng') * PI()) / 180))) * 6371 as calculated_distance", "p.job_post_status='P' AND u.user_rating >= 3 AND p.user_id != '$user_id' AND job_type_id IN (SELECT job_type_id FROM tbl_preferred_jobs WHERE user_id='$user_id')");
+        $fetch = $this->select("tbl_job_posting p LEFT JOIN tbl_users u ON p.user_id=u.user_id", "*, ACOS(SIN(('$lat' * (PI()/180))) * SIN(((SUBSTRING_INDEX(job_post_coordinates, ',', 1) * 1) * (PI()/180))) + COS(('$lat' * (PI()/180))) * COS(((SUBSTRING_INDEX(job_post_coordinates, ',', 1) * 1) * (PI()/180))) * COS(((((SUBSTRING_INDEX(job_post_coordinates, ',', -1) * 1) - '$lng') * PI()) / 180))) * 6371 as calculated_distance", "p.job_post_status='P' AND u.user_rating >= 3 AND p.user_id != '$user_id' AND job_type_id IN (SELECT job_type_id FROM tbl_preferred_jobs WHERE user_id='$user_id') ORDER BY p.date_added DESC");
         while($row = $fetch->fetch_assoc()){
             $row['employer_name'] =  $row['user_fname'] . " " . $row['user_lname'];
             $row['job_fee'] =  number_format($row['job_fee'],2);

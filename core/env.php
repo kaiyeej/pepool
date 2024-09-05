@@ -8,7 +8,7 @@ define("BASE_PATH", __DIR__ . "/../");
 // define("PASSWORD", "");
 // define("DBNAME", "pepool_db");
 
-define("HOST", "185.229.112.70");
+define("HOST", "localhost");
 define("USER", "u814036432_pepool_root");
 define("PASSWORD", "7hISt83J8m;!");
 define("DBNAME", "u814036432_pepool_db");

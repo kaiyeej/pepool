@@ -6,6 +6,7 @@ class Chats extends Connection {
 
     public function add(){
         if(isset($this->inputs['user_id'])){
+            $Notifications = new Notifications;
             $sender_id      = $this->clean($this->inputs['user_id']);
             $transaction_id  = $this->clean($this->inputs['transaction_id']);
             $content  = $this->clean($this->inputs['content']);
@@ -16,6 +17,8 @@ class Chats extends Connection {
                 'content'               => $content,
                 'date_added'            => $this->getCurrentDate()
             );
+
+            $Notifications->send_notification_to_chat($transaction_id, $content);
             return $this->insert($this->table, $form);
         }
     }

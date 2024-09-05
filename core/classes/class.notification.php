@@ -98,6 +98,14 @@ class Notifications extends Connection {
             $this->push_notification($row['token'], "New job available near you", $job_title);
         }
     }
+
+    public function send_notification_to_chat($transaction_id, $content){
+        
+        $fetch = $this->select("tbl_transactions t LEFT JOIN tbl_users u ON t.user_id=u.user_id", "u.push_notification_token as token", "t.transaction_id='$transaction_id' AND u.push_notification_token != ''");
+        while($row = $fetch->fetch_assoc()){
+            $this->push_notification($row['token'], "New message", $content);
+        }
+    }
 }
 
 ?>

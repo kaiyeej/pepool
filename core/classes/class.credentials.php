@@ -34,7 +34,8 @@ class Credentials extends Connection {
 
     public function show()
     { 
-        $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
+        $user_id = $this->inputs['user_id'];
+        $param = "user_id='$user_id'";
         $rows = array();
         $count = 1;
         $result = $this->select($this->table, '*', $param);

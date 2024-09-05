@@ -106,7 +106,7 @@ class Transactions extends Connection
             // insert welcome message
             $Chats->inputs['user_id'] = 0;
             $Chats->inputs['transaction_id'] = $id;
-            $Chats->inputs['content'] = "Welcome to PePool! Your job application has been accepted. You may now start your transaction. This is an auto-generated message.";
+            $Chats->inputs['content'] = "Welcome to PePool! You may now start your transaction. This is an auto-generated message.";
             $Chats->add();
 
             // notify user

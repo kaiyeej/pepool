@@ -47,6 +47,27 @@ class JobTypes extends Connection
         return $rows;
     }
 
+    public function show_per_user()
+    {
+        $user_id = $this->clean($this->inputs['user_id']);
+
+        $preferred_jobs_arr = array();
+        $fetch_preferred_jobs = $this->select("tbl_preferred_jobs", "job_type_id"," user_id='$user_id'");
+        while($preferred_jobs_row = $fetch_preferred_jobs->fetch_assoc()){
+            $preferred_jobs_arr[] = $preferred_jobs_row['job_type_id'];
+        }
+
+        $rows = array();
+        $count = 1;
+        $result = $this->select($this->table, '*', "job_type_id > 0 ORDER BY job_type ASC");
+        while ($row = $result->fetch_assoc()) {
+            $is_in_array = in_array($row['job_type_id'], $preferred_jobs_arr);
+            $row['in_array'] = $is_in_array;
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
     public function view()
     {
         $primary_id = $this->inputs['id'];

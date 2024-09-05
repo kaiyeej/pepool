@@ -52,6 +52,13 @@ class PreferredJobs extends Connection {
         $id = $this->clean($this->inputs['id']);
         return $this->delete($this->table, "$this->pk='$id'");
     }
+
+    public function remove_per_user()
+    {
+        $id = $this->clean($this->inputs['id']);
+        $user_id = $this->clean($this->inputs['user_id']);
+        return $this->delete($this->table, "job_type_id='$id' AND user_id='$user_id'");
+    }
 }
 
 ?>

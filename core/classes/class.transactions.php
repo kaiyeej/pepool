@@ -98,7 +98,7 @@ class Transactions extends Connection
             
 
             // insert welcome message
-            $Chats->inputs['sender_id'] = 0;
+            $Chats->inputs['user_id'] = 0;
             $Chats->inputs['transaction_id'] = $id;
             $Chats->inputs['content'] = "Welcome to PePool! Your job application has been accepted. You may now start your transaction. This is an auto-generated message.";
             $Chats->add();
@@ -194,7 +194,7 @@ class Transactions extends Connection
             // send notif to user for rating
             $fetch_user = $this->select("tbl_users", "push_notification_token", "user_id='$job_post_row[user_id]'");
             $user_row = $fetch_user->fetch_assoc();
-            $Notifications->push_notification($user_row['push_notification_token'], "You have got a new rating of $rating from a worker", "Open PePool to see details");
+            $Notifications->push_notification($user_row['push_notification_token'], "You have got a new rating of $rating from a worker.", "Open PePool to see details");
         }
 
         return $res;
